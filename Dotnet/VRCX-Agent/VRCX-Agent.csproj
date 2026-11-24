@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>VRCX.Agent</AssemblyName>
+    <RootNamespace>VRCX.Agent</RootNamespace>
+    <Product>VRCX Cloud Agent</Product>
+    <Description>Lightweight Windows companion tray agent for VRCX Cloud (zero CEF/Electron)</Description>
+    <Version>1.10.5</Version>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
+    <SelfContained Condition="'$(SelfContained)' == ''">false</SelfContained>
+    <ApplicationIcon>..\..\images\VRCX.ico</ApplicationIcon>
+    <OutputPath>..\..\build\VRCX-Agent\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Reuse upstream zero-coupling modules directly -->
+    <Compile Include="..\Discord.cs" Link="Shared\Discord.cs" />
+    <Compile Include="..\ScreenshotMetadata\PNGChunk.cs" Link="Shared\ScreenshotMetadata\PNGChunk.cs" />
+    <Compile Include="..\ScreenshotMetadata\PNGChunkTypeFilter.cs" Link="Shared\ScreenshotMetadata\PNGChunkTypeFilter.cs" />
+    <Compile Include="..\ScreenshotMetadata\PNGFile.cs" Link="Shared\ScreenshotMetadata\PNGFile.cs" />
+    <Compile Include="..\ScreenshotMetadata\PNGHelper.cs" Link="Shared\ScreenshotMetadata\PNGHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\images\VRCX.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLog" Version="6.2.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.0" />
+  </ItemGroup>
+</Project>

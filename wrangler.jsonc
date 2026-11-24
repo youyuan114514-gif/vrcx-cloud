@@ -1,0 +1,59 @@
+{
+    "$schema": "cloud/node_modules/wrangler/config-schema.json",
+    "name": "vrcx-cloud",
+    "main": "cloud/src/index.ts",
+    "compatibility_date": "2026-11-01",
+    // Automatically build the VRCX Web SPA during `npx wrangler deploy` so zero Dashboard build-command config is required.
+    "build": {
+        "command": "npm run build:web"
+    },
+    // Serves the full built VRCX Vue SPA (--mode web) directly from Cloudflare edge at zero Worker request cost.
+    "assets": {
+        "directory": "./build/web",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": ["/health", "/poc/*", "/api/*", "/ws/*"]
+    },
+    // Omit database_id so Cloudflare Automatic Resource Provisioning creates all 3 Free-tier D1 shards on deploy.
+    "d1_databases": [
+        {
+            "binding": "DB_CORE",
+            "database_name": "vrcx-core",
+            "migrations_dir": "cloud/migrations/core","database_id": "58edd646-a910-42c0-9be2-bf5b5030afe2"
+        },
+        {
+            "binding": "DB_GAMELOG",
+            "database_name": "vrcx-gamelog",
+            "migrations_dir": "cloud/migrations/gamelog","database_id": "fa9d7802-aaba-473e-9b3e-c97047c5cc1d"
+        },
+        {
+            "binding": "DB_FEED",
+            "database_name": "vrcx-feed",
+            "migrations_dir": "cloud/migrations/feed","database_id": "f115ffa4-b3be-48e0-bda8-367bed66cb30"
+        }
+    ],
+    "durable_objects": {
+        "bindings": [
+            {
+                "name": "AGENT_HUB",
+                "class_name": "AgentHubDO"
+            }
+        ]
+    },
+    "migrations": [
+        {
+            "tag": "v1",
+            "new_sqlite_classes": ["AgentHubDO"]
+        }
+    ],
+    // Omit bucket_name so Cloudflare Automatic Resource Provisioning binds/creates the private R2 bucket
+    // and Git auto-deploys never wipe Dashboard R2_MEDIA bindings.
+    "r2_buckets": [
+        {
+            "binding": "R2_MEDIA","bucket_name": "vrcx-cloud","preview_bucket_name": "vrcx-cloud"
+        }
+    ],
+    // 1-minute cron tick gated inside scheduled() by user-configured syncIntervalSeconds (0 external fetch when idle/web active).
+    "triggers": {
+        "crons": ["* * * * *"]
+    }
+}

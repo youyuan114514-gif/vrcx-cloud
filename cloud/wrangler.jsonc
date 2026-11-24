@@ -1,0 +1,55 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "vrcx-cloud",
+    "main": "src/index.ts",
+    "compatibility_date": "2026-11-01",
+    // Static frontend assets served directly from Cloudflare edge at zero Worker request cost.
+    // Phase 0 serves the diagnostics page; Phase 1 will point to the built VRCX Web SPA.
+    "assets": {
+        "directory": "./public",
+        "not_found_handling": "single-page-application",
+        "run_worker_first": ["/health", "/poc/*", "/api/*", "/ws/*"]
+    },
+    // Omit database_id to enable Cloudflare Automatic Resource Provisioning on one-click deploy.
+    "d1_databases": [
+        {
+            "binding": "DB_CORE",
+            "database_name": "vrcx-core",
+            "migrations_dir": "migrations/core"
+        },
+        {
+            "binding": "DB_GAMELOG",
+            "database_name": "vrcx-gamelog",
+            "migrations_dir": "migrations/gamelog"
+        },
+        {
+            "binding": "DB_FEED",
+            "database_name": "vrcx-feed",
+            "migrations_dir": "migrations/feed"
+        }
+    ],
+    "durable_objects": {
+        "bindings": [
+            {
+                "name": "AGENT_HUB",
+                "class_name": "AgentHubDO"
+            }
+        ]
+    },
+    "migrations": [
+        {
+            "tag": "v1",
+            "new_sqlite_classes": ["AgentHubDO"]
+        }
+    ],
+    "triggers": {
+        "crons": ["* * * * *"]
+    }
+    // Optional R2 binding (uncomment after enabling R2 in Cloudflare dashboard):
+    // "r2_buckets": [
+    //     {
+    //         "binding": "R2_MEDIA",
+    //         "bucket_name": "vrcx-media"
+    //     }
+    // ]
+}

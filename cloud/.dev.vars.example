@@ -1,0 +1,3 @@
+# Optional bearer token to protect /poc/*, /api/*, and /ws/* endpoints in Phase 0.
+# Leave empty for local testing; set a random secret via `wrangler secret put POC_ADMIN_TOKEN` or Dashboard Secrets for production.
+POC_ADMIN_TOKEN=

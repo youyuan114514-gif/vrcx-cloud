@@ -1,0 +1,7 @@
+<Project>
+  <!-- Isolate VRCX-Agent from Dotnet/Directory.Build.props host-OS RID forcing so win-x64 builds cleanly on Windows and Linux cross-compile -->
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>bin\</BaseOutputPath>
+  </PropertyGroup>
+</Project>
